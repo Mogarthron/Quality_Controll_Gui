@@ -1,0 +1,13 @@
+{
+    "conf": [
+        {
+            "work_station_no": 1,
+            "path_to_defects": null,
+            "path_to_output_dir": null
+        }
+    ],
+    "allowed_workers": [
+        "Janina Okoń",
+        "Dobiesława Bobrzańaka"
+    ]
+}

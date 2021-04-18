@@ -1,0 +1,4 @@
+Work station no.: 1
+Path to output dir: "Output" 
+
+

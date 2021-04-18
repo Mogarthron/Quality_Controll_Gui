@@ -1,7 +1,7 @@
-from views import SidePanelView
+from qualitycontrol.views import SidePanelView
 
 
-class Controler:
+class MainControler:
     def __init__(self):
 
         view = SidePanelView()

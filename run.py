@@ -1,7 +1,5 @@
-from controlers import Controler
-
-cont = Controler()
+from qualitycontrol import app
 
 if __name__ == "__main__":
 
-    cont.run()
+    app.run()
