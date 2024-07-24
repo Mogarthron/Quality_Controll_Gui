@@ -1,13 +1,17 @@
 from tkinter import Tk, Label, Button, StringVar
 from tkinter.ttk import Combobox
 import tkinter.font as font
-from qualitycontrol.models import DefectsModel, SidePanelModel
+from qualitycontrol_ktinker.models import DefectsModel, SidePanelModel
 
 
 class MainView:
+    def __init__(self, root):
+        self.root = root
+        self.myFont = font.Font(size=12)
+
     def Btn(self, root, text, command, font, width=15, height=5, _grid=None):
         b = Button(
-            root,
+            self.root,
             justify="center",
             fg="white",
             bg="blue",
@@ -16,7 +20,8 @@ class MainView:
         b["width"] = width
         b["height"] = height
         b["command"] = command
-        b["font"] = font
+        # b["font"] = font
+        b["font"] = self.myFont
 
         if type(_grid) == list:
             b.grid(row=_grid[0], column=_grid[1], padx=1, pady=1)
@@ -26,12 +31,16 @@ class MainView:
     def BtnText(self, t):
         return t[0] + "\n" + "Forma: " + t[1] + "\n" + "Warsztat: " + t[2]
 
+    def CloseWindowCommand(self):
+        self.root.destroy()
+
 
 class SidePanelView:
     def __init__(self):
-        mv = MainView()
+
         spm = SidePanelModel()
         self.window = Tk()
+        mv = MainView(self.window)
 
         qc_list = spm.qc_list
 
@@ -64,7 +73,7 @@ class SidePanelView:
         mv.Btn(
             self.window,
             "Zamknij",
-            self.window.destroy,
+            mv.CloseWindowCommand,
             self.__myFont,
             width=20,
             height=5,
@@ -77,13 +86,6 @@ class SidePanelView:
 
 class DefectsView:
     def __init__(self, master, workstation, shift, number_of_work_card):
-
-        # self.__qcemp_list = [
-        #     "Sort_1",
-        #     "Janina Okoń",
-        #     "Dobiesława Bobrzeńska",
-        #     "Krystyna Walszek",
-        # ]
 
         self.__selectedValue = StringVar()
         self.__currentSelectedValue = ""
@@ -135,7 +137,7 @@ class DefectsView:
         self.__currentSelectedValue = event.widget.get()
 
     def __SetLayout(self):
-        mv = MainView()
+        mv = MainView(self.window)
 
         cb = Combobox(self.window, textvariable=self.__selectedValue)
         cb["values"] = self.__d.qcemp_list

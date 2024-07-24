@@ -1,4 +1,4 @@
-from qualitycontrol.views import SidePanelView
+from qualitycontrol_ktinker.views import SidePanelView
 
 
 class MainControler:

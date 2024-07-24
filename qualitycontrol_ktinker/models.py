@@ -21,7 +21,7 @@ class DefectsModel:
             "Sort_1",
             "Janina Okoń",
             "Dobiesława Bobrzeńska",
-            "Krystyna Walszek",
+            "Krystyna Walaszek",
         ]
 
         self.labels = [x.replace(".csv", "") for x in os.listdir(self.def_path)]
