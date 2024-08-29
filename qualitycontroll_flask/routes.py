@@ -29,7 +29,7 @@ def logout():
     logout_user()
     return render_template("index.html")
 
-@app.route("/quality_controll")
+@app.route("/quality_controll", methods=["POST", "GET"])
 @login_required
 def quality_controll():
 
@@ -43,5 +43,6 @@ def quality_controll():
 "Nić z pladrą na poczatku",
 "Nić z pladrą w środku"
 ]
+   
     
     return render_template("quality_controll.html", glass_defects=glass_defects)

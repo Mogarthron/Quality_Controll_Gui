@@ -12,15 +12,27 @@
     />
   </head>
   <body>
-    <div class="cotainer text-center">
+    <div class="container">
       <div class="row">
         {% for d in glass_defects %}
 
-        <div class="col">{{d}}</div>
+        <div class="col-md-3 col-sm-6 mb-3">
+          <div class="card">
+            <form method="post">
+              <input
+                type="submit"
+                class="btn btn-primary"
+                name="wada_{{d}}"
+                value="{{d}}"
+              />
+            </form>
+          </div>
+        </div>
 
         {% endfor %}
       </div>
     </div>
+
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
