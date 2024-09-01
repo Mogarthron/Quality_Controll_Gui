@@ -21,6 +21,9 @@ class Users(Base, UserMixin):
     def get_id(self):
         return self.uid
     
+    def set_new_password(self, new_password):
+        self.password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    
     def check_password(self, password):
         return bcrypt.checkpw(password.encode('utf-8'), self.password.encode('utf-8'))
 
@@ -45,13 +48,18 @@ class Quality_controlled_items(Base):
     __tablename__ = "quality_controlled_items"
 
     iid = Column(Integer, primary_key=True)
-    item_name = Column(String(256), nullable=True)
+    item_name = Column(String(256), nullable=False)
     description = Column(String(512), nullable=True)
     photo_dir = Column(String(512), nullable=True)
+
+
+
 
 class Work_card(Base):
     __tablename__ = "work_card"
 
     wcid = Column(Integer, primary_key=True)
     wc_name = Column(String(64), nullable=True)
-    creation_time = Column(DateTime)
+    qciid = Column(Integer, nullable=False)
+    creation_time = Column(DateTime, default=dt.now())
+    close_time = Column(DateTime)
