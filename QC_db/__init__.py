@@ -23,7 +23,7 @@ def create_db(url="sqlite:///QC.db"):
     Session = sessionmaker(bind=db_engine)
     db_session = Session()
 
-    db_session.add(Users("admin", "admin", "admin"))
+    db_session.add(Users("firstuser", "firstuser", "firstuser"))
     db_session.commit()
 
 
