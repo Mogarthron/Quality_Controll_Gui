@@ -132,5 +132,6 @@ dmypy.json
 Output
 
 *.ipynb
+*.db
 alembic
 alembic.ini
