@@ -1,20 +1,21 @@
 from flask import Flask 
-from flask_login import LoginManager, login_user, logout_user, current_user, login_required
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 
-app = Flask(__name__, template_folder="templates")
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///./appdb.db"
-app.secret_key = "SUPER SECRET KEY"
+app = Flask(__name__, template_folder='templates')
 
-from qualitycontroll_flask.routes import *
+db = SQLAlchemy()
 
-login_manager = LoginManager()
-login_manager.init_app(app=app)
+def create_app(db_url="sqlite:///./QC.db"):
+    
+    app.config["SQLALCHEMY_DATABASE_URI"] = db_url
+    app.secret_key = "SUPER SECRET KEY"
 
-@login_manager.user_loader
-def load_user(uid):
-    return User.query.get(uid) 
+    db.init_app(app)
 
-with app.app_context():
-    db.create_all()
+    from .routes import index, login, logout, quality_controll
 
+    migrate = Migrate(app, db)
+
+    return app

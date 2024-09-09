@@ -1,7 +1,15 @@
 from flask import Flask, render_template, request, jsonify 
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 
-from qualitycontroll_flask.appdb import *
+from qualitycontroll_flask import app
+from qualitycontroll_flask.models import *
+
+login_manager = LoginManager()
+login_manager.init_app(app=app)
+
+@login_manager.user_loader
+def load_user(uid):
+    return db.session.query(Users).get(uid) 
 
 @app.route('/', methods=["GET", "POST"])
 def index():
@@ -11,12 +19,13 @@ def index():
 def login():
     if request.method == "GET":
         return render_template("login.html")
+    
     elif request.method == "POST":
         username = request.form.get("userName")
         haslo = request.form.get("password")
 
         # user = User.query.filter(User.username == username).first()        
-        user = db.session.query(User).filter(User.username == username).first()        
+        user = db.session.query(Users).filter(Users.username == username).first()        
 
         if user.haslo == haslo:
             login_user(user)
