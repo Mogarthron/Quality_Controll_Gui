@@ -13,7 +13,7 @@ Base = declarative_base()
 #                      port=mip_url["port"],
 #                      database=mip_url["database"]
 #                      )
-from QC_db.models import * 
+from qualitycontroll_flask.models import * 
 
 def create_db(url="sqlite:///QC.db"):
     
