@@ -17,21 +17,32 @@ def index():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+
+    if db.session.query(Users).count() == 0:
+            print("brak userów!!!!")                   
+            return "BRAK USEROW"
+    
     if request.method == "GET":
         return render_template("login.html")
     
     elif request.method == "POST":
-        username = request.form.get("userName")
-        haslo = request.form.get("password")
 
-        # user = User.query.filter(User.username == username).first()        
-        user = db.session.query(Users).filter(Users.username == username).first()        
+        username = request.form.get("userName")
+        haslo = request.form.get("password")        
+    
+        user = db.session.query(Users).filter(Users.username == username).first()
 
         if user.haslo == haslo:
             login_user(user)
             return render_template("index.html")
         else:
             return "FILED!!!!!!!"
+
+@app.route("/dodaj_urzytkownika")
+def dodaj_urzytkownika():
+
+    return render_template("dodaj_urzytkownika.html")
+
 
 @app.route("/logout")
 def logout():

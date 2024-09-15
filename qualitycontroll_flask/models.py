@@ -10,9 +10,9 @@ class Users(db.Model, UserMixin):
     __tablename__ = "users"
 
     uid = db.Column(Integer, primary_key=True)
-    username = db.Column(String, nullable=False)
-    password = db.Column(String, nullable=False)
-    role =  db.Column(String, nullable=True)
+    username = db.Column(String(128), nullable=False)
+    password = db.Column(String(512), nullable=False)
+    role =  db.Column(String(128), nullable=True)
     user_number = db.Column(String(10), nullable=True)
 
     def __init__(self, username, password, role, user_number=None):
