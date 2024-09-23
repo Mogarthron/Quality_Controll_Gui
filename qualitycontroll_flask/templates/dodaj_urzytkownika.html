@@ -1,1 +1,25 @@
-{% extends "layout.html" %} {% block content %} dodaj urzykownika {% endblock %}
+{% extends "layout.html" %} {% block content %}
+
+<form method="post">
+    <div class="mb-3 row">
+        <label for="nazwaUrzytkownika" name="nazwaUrzytkownika" class="col-sm-2 col-form-label">Nazwa urzytkownika</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="nazwaUrzytkownika" name="nazwaUrzytkownika" placeholder="nazwa urzytkownika">
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <label for="hasloUrzytkownika" class="col-sm-2 col-form-label">Haslo</label>
+        <div class="col-sm-10">
+          <input type="password" class="form-control" id="hasloUrzytkownika" name="hasloUrzytkownika">
+        </div>
+      </div>
+      <div class="mb-3 row"></div>
+      <label for="rolaUrzytkownika" name="rolaUrzytkownika" class="col-sm-2 col-form-label">Rola urzytkownika</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="rolaUrzytkownika" name="rolaUrzytkownika" placeholder="rola">
+        </div>
+      </div>
+      <input type="submit" value="dodajUrzytkownika">
+</form>
+
+{% endblock %}
