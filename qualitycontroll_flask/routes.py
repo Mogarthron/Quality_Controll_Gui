@@ -1,5 +1,9 @@
-from flask import Flask, render_template, request, jsonify 
+from flask import Flask, render_template, redirect, url_for, request, jsonify, flash 
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
+
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms.validators import DataRequired
 
 from qualitycontroll_flask import app
 from qualitycontroll_flask.models import *
@@ -15,31 +19,54 @@ def load_user(uid):
 def index():
     return render_template("index.html", user=current_user)
 
+
+class Login_form(FlaskForm):
+    username = StringField('Username',  validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Log In')
+
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
 
     if db.session.query(Users).count() == 0:
             print("brak userów!!!!")                   
-            return "BRAK USEROW"
-    
-    if request.method == "GET":
-        return render_template("login.html")
-    
-    elif request.method == "POST":
+            return redirect(url_for("dodaj_urzytkownika"))
+          
+    form = Login_form()
+    if form.validate_on_submit():
 
-        username = request.form.get("userName")
-        haslo = request.form.get("password")        
-    
+        username = form.username.data
+        password = form.password.data       
+       
         user = db.session.query(Users).filter(Users.username == username).first()
 
-        if user.haslo == haslo:
-            login_user(user)
-            return render_template("index.html")
+        if user and user.check_password(password):  
+            login_user(user)  
+            flash('Logged in successfully.', 'success')
+            return redirect(url_for('index'))  
+        
         else:
-            return "FILED!!!!!!!"
+            flash('Invalid username or password', 'danger')  
 
-@app.route("/dodaj_urzytkownika")
+    return render_template('login.html', form=form)
+
+
+
+
+@app.route("/dodaj_urzytkownika", methods=["POST", "GET"])
 def dodaj_urzytkownika():
+
+    if request.method == "POST":
+        new_user = request.form["nazwaUrzytkownika"]
+        new_user_role = request.form["rolaUrzytkownika"]
+        new_user_password = request.form["hasloUrzytkownika"]
+
+        db.session.add(Users(new_user, new_user_password, new_user_role))
+        db.session.commit()
+
+        return redirect(url_for('login'))
 
     return render_template("dodaj_urzytkownika.html")
 
