@@ -10,16 +10,23 @@ class Users(db.Model, UserMixin):
     __tablename__ = "users"
 
     uid = db.Column(Integer, primary_key=True)
-    username = db.Column(String(128), nullable=False)
-    password = db.Column(String(512), nullable=False)
-    role =  db.Column(String(128), nullable=True)
+    user_name = db.Column(String(128), nullable=False, unique=True)
+    password = db.Column(String(512), nullable=False) 
+    role = db.Column(String(128), nullable=False)   
     user_number = db.Column(String(10), nullable=True)
 
-    def __init__(self, username, password, role, user_number=None):
-        self.username = username
+    admin = db.Column(Boolean, default=False)
+    quality_controll = db.Column(Boolean, default=True)
+
+    def __init__(self, user_name, password, role=None, user_number=None, **permisions):
+        self.user_name = user_name
         self.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
         self.role = role
         self.user_number = user_number
+        self.admin = permisions["admin"]
+        self.quality_controll = permisions["quality_controll"]
+
+
 
     def get_id(self):
         return self.uid
@@ -31,25 +38,7 @@ class Users(db.Model, UserMixin):
         return bcrypt.checkpw(password.encode('utf-8'), self.password.encode('utf-8'))
 
     def __repr__(self):
-        return f"<utowrzono: {self.username} z id {self.uid}, rola: {self.role}>"
-
-
-class User_permissions(db.Model):
-    __tablename__ = "user_permissions"
-
-    upid = db.Column(Integer, primary_key=True)
-    uid = db.Column(Integer, ForeignKey("users.uid"))
-    admin = db.Column(Boolean, default=False)
-    quality_controll = db.Column(Boolean, default=True)
-
-    users = relationship("Users")
-
-    def __init__(self, uid, quality_controll:bool, admin=False):
-
-        self.uid = uid
-        self.admin = admin
-        self.quality_controll = quality_controll
-
+        return f"<{self.username}: id {self.uid}, role {self.role}>"
     
 
 class Defects(db.Model):

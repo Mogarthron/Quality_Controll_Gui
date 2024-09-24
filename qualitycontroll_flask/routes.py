@@ -2,8 +2,8 @@ from flask import Flask, render_template, redirect, url_for, request, jsonify, f
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired
+from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms.validators import DataRequired, Length, EqualTo
 
 from qualitycontroll_flask import app
 from qualitycontroll_flask.models import *
@@ -21,7 +21,7 @@ def index():
 
 
 class Login_form(FlaskForm):
-    username = StringField('Username',  validators=[DataRequired()])
+    user_name = StringField('Username',  validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Log In')
 
@@ -37,10 +37,10 @@ def login():
     form = Login_form()
     if form.validate_on_submit():
 
-        username = form.username.data
+        user_name = form.user_name.data
         password = form.password.data       
        
-        user = db.session.query(Users).filter(Users.username == username).first()
+        user = db.session.query(Users).filter(Users.user_name == user_name).first()
 
         if user and user.check_password(password):  
             login_user(user)  
@@ -53,22 +53,42 @@ def login():
     return render_template('login.html', form=form)
 
 
+class User_form(FlaskForm):
+    user_name = StringField('Username', validators=[DataRequired(), Length(min=4, max=128)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=4)])
+    confirm_password = PasswordField('Confirm Password', 
+                                     validators=[DataRequired(), EqualTo('password', message='Passwords must match')])
+    role = StringField('Role', validators=[DataRequired(), Length(max=128)])
+    user_number = StringField('User Number', validators=[Length(max=10)])
+    admin = BooleanField('Admin')
+    quality_controll = BooleanField('Quality Control', default=True)
+    
+    submit = SubmitField('Dodaj nowego Urzytkownika')
 
 
-@app.route("/dodaj_urzytkownika", methods=["POST", "GET"])
-def dodaj_urzytkownika():
+@app.route("/add_user", methods=["POST", "GET"])
+@login_required
+def add_user():
 
-    if request.method == "POST":
-        new_user = request.form["nazwaUrzytkownika"]
-        new_user_role = request.form["rolaUrzytkownika"]
-        new_user_password = request.form["hasloUrzytkownika"]
+    form = User_form()
+    if form.validate_on_submit():
+        new_user = Users(
+            username=form.user_name.data,
+            password=form.password.data,
+            role= form.role.data,
+            user_number=form.user_number.data,
+            admin=form.admin.data,
+            quality_controll=form.quality_controll.data
+        )
 
-        db.session.add(Users(new_user, new_user_password, new_user_role))
+        db.session.add(new_user)
         db.session.commit()
+
+        flash('User registered successfully!', 'success')
 
         return redirect(url_for('login'))
 
-    return render_template("dodaj_urzytkownika.html")
+    return render_template("add_user.html", form=form)
 
 
 @app.route("/logout")
